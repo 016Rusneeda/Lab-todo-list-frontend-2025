@@ -1058,9 +1058,8 @@ npm run dev
 - ✅ UI สวยงาม มี animations
 
 ## บันทึกรูปผลการทดลอง
-```bash
-# บันทึกรูปผลการทดลองที่นี่
-``` 
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/ca5e2d48-f4f9-480d-879f-d4675f3901b4" />
+
 
 ### ขั้นตอนที่ 8.4: Test Build
 
