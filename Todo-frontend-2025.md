@@ -1355,37 +1355,37 @@ todo-frontend/
 
 ### Pre-deployment Checklist
 
-- [ ] Node.js 18+ ติดตั้งแล้ว
-- [ ] Git ติดตั้งแล้ว
-- [ ] GitHub Account พร้อม
-- [ ] Backend API ทำงานปกติ
-- [ ] CORS ตั้งค่าถูกต้อง
+- [ ✅ ] Node.js 18+ ติดตั้งแล้ว
+- [ ✅ ] Git ติดตั้งแล้ว
+- [ ✅ ] GitHub Account พร้อม
+- [ ✅ ] Backend API ทำงานปกติ
+- [ ✅ ] CORS ตั้งค่าถูกต้อง
 
 ### Development Checklist
 
-- [ ] สร้างโปรเจกต์ Next.js
-- [ ] ติดตั้ง dependencies ครบ
-- [ ] สร้าง API layer (`src/lib/api.js`)
-- [ ] สร้าง components ทั้ง 3 ตัว
-- [ ] สร้าง main page
-- [ ] แก้ไข styling
-- [ ] ทดสอบ local ผ่าน
+- [ ✅ ] สร้างโปรเจกต์ Next.js
+- [ ✅ ] ติดตั้ง dependencies ครบ
+- [ ✅ ] สร้าง API layer (`src/lib/api.js`)
+- [ ✅ ] สร้าง components ทั้ง 3 ตัว
+- [ ✅ ] สร้าง main page
+- [ ✅ ] แก้ไข styling
+- [ ✅ ] ทดสอบ local ผ่าน
 
 ### Deployment Checklist
 
-- [ ] สร้าง GitHub repository
-- [ ] สร้าง workflow file
-- [ ] ตั้งค่า GitHub Pages
-- [ ] ตั้งค่า workflow permissions
-- [ ] อัพเดท API URL ใน workflow
-- [ ] Push code ไป GitHub
-- [ ] Workflow รันสำเร็จ
-- [ ] Website เข้าถึงได้
-- [ ] ทดสอบ features ครบ
+- [ ✅ ] สร้าง GitHub repository
+- [ ✅ ] สร้าง workflow file
+- [ ✅ ] ตั้งค่า GitHub Pages
+- [ ✅ ] ตั้งค่า workflow permissions
+- [ ✅ ] อัพเดท API URL ใน workflow
+- [ ✅ ] Push code ไป GitHub
+- [ ✅ ] Workflow รันสำเร็จ
+- [ ✅ ] Website เข้าถึงได้
+- [ ✅ ] ทดสอบ features ครบ
 
 ### Testing Checklist
 
-- [ ] เปิดหน้าเว็บได้
+- [ ✅ ] เปิดหน้าเว็บได้
 - [ ] API Status เป็น "Connected"
 - [ ] เพิ่ม Todo ได้
 - [ ] ลบ Todo ได้
@@ -1397,7 +1397,28 @@ todo-frontend/
 ## ส่วนที่ 15: คำถามท้ายการทดลอง
 
 1. **CI/CD Pipeline**: อธิบายขั้นตอนใน GitHub Actions workflow
+
+| ลำดับ | ส่วนของ Workflow     | รายละเอียด / หน้าที่   | คำสั่งหรือ Action ที่ใช้      |
+| :---: | :------------------- | :----------------------------------- | :------------------------------------------------------ |
+|   1   | **ชื่อ Workflow**    | ตั้งชื่อ workflow ว่า *Deploy to GitHub Pages* เพื่อให้ง่ายต่อการตรวจสอบในหน้า Actions                                                           | `name: Deploy to GitHub Pages`                          |
+|   2   | **Trigger Events**   | กำหนดให้ workflow ทำงานเมื่อเกิดเหตุการณ์:<br>• push ไปยัง branch `main`<br>• pull request เข้าสู่ `main`<br>• หรือรันด้วยตนเอง (manual trigger) | `on: push`, `on: pull_request`, `on: workflow_dispatch` |
+|   3   | **Permissions**      | กำหนดสิทธิ์ให้ runner สามารถอ่าน repo และเขียนขึ้น GitHub Pages ได้                                                                              | `contents: read`, `pages: write`, `id-token: write`     |
+|   4   | **Concurrency**      | ป้องกันการ deploy ซ้ำในเวลาเดียวกัน โดยให้รันเป็นกลุ่มชื่อ “pages”                                                                               | `concurrency: group: "pages"`                           |
+|   5   | **Job: build**       | งานหลักในการ build แอป Next.js                                                                                                                   | `jobs.build`                                            |
+|  5.1  | Checkout code        | ดึง source code จาก repository                                                                                                                   | `uses: actions/checkout@v4`                             |
+|  5.2  | Setup Node.js        | ตั้งค่า Node.js เวอร์ชัน 18 เพื่อให้ build ได้                                                                                                   | `uses: actions/setup-node@v4`                           |
+|  5.3  | Clear cache          | ลบโฟลเดอร์ `.next` และ cache เก่าก่อน build ใหม่                                                                                                 | `run: rm -rf .next`                                     |
+|  5.4  | Install dependencies | ติดตั้ง dependency จาก `package-lock.json`                                                                                                       | `run: npm ci`                                           |
+|  5.5  | Run linting          | ตรวจสอบคุณภาพโค้ดด้วย ESLint                                                                                                                     | `run: npm run lint`                                     |
+|  5.6  | Build Next.js app    | สร้างแอป Next.js และกำหนดค่า environment variable สำหรับ API                                                                                     | `run: npm run build` + `env: NEXT_PUBLIC_API_URL`       |
+|  5.7  | Upload artifact      | อัปโหลดผลลัพธ์ (โฟลเดอร์ `out/`) ไปเก็บเป็น artifact เพื่อส่งต่อให้ job ถัดไป                                                                    | `uses: actions/upload-pages-artifact@v3`                |
+|   6   | **Job: deploy**      | ทำหน้าที่ deploy แอปไปยัง GitHub Pages (ทำหลังจาก build เสร็จ)                                                                                   | `jobs.deploy`                                           |
+|  6.1  | Condition check      | รันเฉพาะเมื่ออยู่บน branch `main` และ job build ผ่านแล้ว                                                                                         | `needs: build` + `if: github.ref == 'refs/heads/main'`  |
+|  6.2  | Deploy to Pages      | ใช้ GitHub Action สำหรับ deploy หน้าเว็บขึ้น GitHub Pages                                                                                        | `uses: actions/deploy-pages@v4`                         |
+
 2. **CORS**: ทำไม Backend ต้อง enable CORS สำหรับ Frontend
+   ตอบ : Backend ต้อง enable CORS เพื่อบอก Browser ว่า Frontend (ที่อยู่คนละ origin) สามารถเข้าถึง API ได้อย่างปลอดภัย
+หากไม่เปิด Browser จะบล็อกการสื่อสารทั้งหมด แม้ API จะทำงานได้ปกติบน Server ก็ตาม
 
 
 ## ส่วนที่ 16: แหล่งข้อมูลเพิ่มเติม
