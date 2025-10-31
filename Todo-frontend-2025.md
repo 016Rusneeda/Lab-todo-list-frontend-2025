@@ -1171,9 +1171,8 @@ git push origin main
 
 
 ## บันทึกรูปผลการ Deploy
-```bash
-# บันทึกรูปผลการ Deploy ที่นี่
-```
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/56807bdd-bf08-4df0-bb76-3a7c9720a9ea" />
+
 
 ### ขั้นตอนที่ 10.3: หา URL ของ Website
 
@@ -1202,9 +1201,8 @@ https://your-username.github.io/todo-frontend/
 
 ---
 ## บันทึกรูปผลการรันหน้า Front-end
-```bash
-# บันทึกรูปผลการรันหน้า Front-end ที่นี่
-```
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/6c0812a1-e86f-4681-90fe-ac43983aa7b8" />
+
 
 ## ส่วนที่ 11: Troubleshooting
 
